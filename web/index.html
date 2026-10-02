@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TokenOpt</title>
+    <meta name="description" content="Adaptive Multimodal Token Optimizer: a pre-tokenization layer that reduces LLM input tokens for images and video using quadtrees, heaps, hashing, union-find and tries.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/lucide-static@0.516.0/font/lucide.css" rel="stylesheet">
+    <script src="https://unpkg.com/motion@11.11.17/dist/motion.js"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Space Grotesk", "ui-sans-serif", "system-ui", "sans-serif"],
+              mono: ["JetBrains Mono", "ui-monospace", "Menlo", "monospace"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <style type="text/tailwindcss">
+    @layer theme {
+        :root {
+            --bg: #0a0b0d;
+            --panel: #13151a;
+            --panel-2: #1a1d23;
+            --border: #282c34;
+            --text: #eceef1;
+            --muted: #8b919c;
+            --lime: #d4ff3f;
+            --cyan: #67e8f9;
+            --orange: #ff6b35;
+            --dup: #3e4450;
+        }
+    }
+
+    @layer base {
+        html { scroll-behavior: smooth; color-scheme: dark; }
+        body {
+            @apply bg-[var(--bg)] text-[var(--text)] font-sans antialiased;
+            background-image: radial-gradient(rgba(255,255,255,0.045) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        ::selection { background: var(--lime); color: #000; }
+        .border-0\.75 { border-width: 0.75px; }
+        input[type=range] { accent-color: var(--lime); }
+        code { @apply font-mono text-[0.9em] bg-[var(--panel-2)] border border-[var(--border)] rounded px-1.5 py-0.5; }
+    }
+
+    @layer components {
+        .btn { @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors; }
+        .btn-primary { @apply bg-[var(--lime)] text-black hover:brightness-110; }
+        .btn-ghost { @apply border border-[var(--border)] text-[var(--text)] hover:bg-[var(--panel-2)]; }
+        .card { @apply rounded-2xl border border-[var(--border)] bg-[var(--panel)]; }
+        .label { @apply font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)]; }
+        .seg { @apply grid gap-1 p-1 rounded-lg bg-[var(--bg)] border border-[var(--border)]; }
+        .seg-btn { @apply py-1.5 rounded-md text-sm font-mono transition-colors text-[var(--muted)] hover:text-[var(--text)]; }
+        .seg-btn-on { @apply bg-[var(--lime)] text-black hover:text-black; }
+        .kicker { @apply font-mono text-xs uppercase tracking-[0.18em] text-[var(--lime)]; }
+    }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel" src="lib/utils.js"></script>
+    <script type="text/babel" src="lib/api.js"></script>
+    <script type="text/babel" src="components/ui/glowing-effect.js"></script>
+    <script type="text/babel" src="components/header.js"></script>
+    <script type="text/babel" src="components/footer.js"></script>
+    <script type="text/babel" src="components/structures.js"></script>
+    <script type="text/babel" src="components/charts.js"></script>
+    <script type="text/babel" src="components/playground.js"></script>
+    <script type="text/babel" src="components/results.js"></script>
+    <script type="text/babel" src="components/explainer.js"></script>
+    <script type="text/babel" src="app.js"></script>
+</body>
+</html>
