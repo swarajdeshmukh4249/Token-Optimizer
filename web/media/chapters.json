@@ -1,0 +1,435 @@
+{
+ "duration": 326.21,
+ "chapters": [
+  {
+   "tag": "00",
+   "title": "Adaptive Token Optimizer",
+   "start": 0.0,
+   "end": 12.33,
+   "lines": [
+    "This is the Adaptive Token Optimizer.",
+    "It sits in front of a vision language model, and decides how many tokens each part of an image or a video really deserves, before the model ever sees it."
+   ],
+   "cues": [
+    {
+     "start": 0.5,
+     "end": 2.69,
+     "text": "This is the Adaptive Token Optimizer."
+    },
+    {
+     "start": 2.99,
+     "end": 11.35,
+     "text": "It sits in front of a vision language model, and decides how many tokens each part of an image or a video really deserves, before the model ever sees it."
+    }
+   ]
+  },
+  {
+   "tag": "01 \u00b7 The problem",
+   "title": "Every patch costs the same",
+   "start": 12.33,
+   "end": 40.42,
+   "lines": [
+    "When you send an image to a multimodal model, the vision encoder cuts it into a uniform grid of small patches, and every patch becomes one input token.",
+    "This screenshot is eighty by fifty patches, so it costs 4,000 tokens.",
+    "Now look at the highlighted patches. They are completely blank, yet they cost exactly as much as the patches full of text.",
+    "Over every frame of a video, and every turn of a conversation, that waste keeps repeating."
+   ],
+   "cues": [
+    {
+     "start": 12.83,
+     "end": 21.45,
+     "text": "When you send an image to a multimodal model, the vision encoder cuts it into a uniform grid of small patches, and every patch becomes one input token."
+    },
+    {
+     "start": 21.75,
+     "end": 26.42,
+     "text": "This screenshot is eighty by fifty patches, so it costs 4,000 tokens."
+    },
+    {
+     "start": 26.72,
+     "end": 33.87,
+     "text": "Now look at the highlighted patches. They are completely blank, yet they cost exactly as much as the patches full of text."
+    },
+    {
+     "start": 34.17,
+     "end": 39.4,
+     "text": "Over every frame of a video, and every turn of a conversation, that waste keeps repeating."
+    }
+   ]
+  },
+  {
+   "tag": "02 \u00b7 Adaptive quadtree",
+   "title": "Split only where there is detail",
+   "start": 40.42,
+   "end": 68.21,
+   "lines": [
+    "Our idea is to make the allocation decision before tokenization, using a quadtree.",
+    "We start with the whole image as a single region.",
+    "If a region's pixel variance is above a threshold, it contains detail, so we split it into four children.",
+    "Flat regions stop splitting early, and every final leaf becomes exactly one token.",
+    "For this screenshot, that is 905 tokens instead of 4,000: 77 percent fewer."
+   ],
+   "cues": [
+    {
+     "start": 40.92,
+     "end": 45.99,
+     "text": "Our idea is to make the allocation decision before tokenization, using a quadtree."
+    },
+    {
+     "start": 46.29,
+     "end": 48.7,
+     "text": "We start with the whole image as a single region."
+    },
+    {
+     "start": 49.0,
+     "end": 55.33,
+     "text": "If a region's pixel variance is above a threshold, it contains detail, so we split it into four children."
+    },
+    {
+     "start": 55.63,
+     "end": 60.63,
+     "text": "Flat regions stop splitting early, and every final leaf becomes exactly one token."
+    },
+    {
+     "start": 60.93,
+     "end": 67.23,
+     "text": "For this screenshot, that is 905 tokens instead of 4,000: 77 percent fewer."
+    }
+   ]
+  },
+  {
+   "tag": "03 \u00b7 Summed-area table",
+   "title": "Variance of any region in O(1)",
+   "start": 68.21,
+   "end": 95.08,
+   "lines": [
+    "Computing the variance of every region by scanning its pixels would be slow.",
+    "So we precompute a summed area table, where each cell stores the sum of all pixels above and to its left.",
+    "The sum of any rectangle then needs only four lookups: D, minus B, minus C, plus A.",
+    "A second table of squared pixels gives the variance too, so building the whole tree costs time proportional to the number of nodes, not the number of pixels."
+   ],
+   "cues": [
+    {
+     "start": 68.71,
+     "end": 72.64,
+     "text": "Computing the variance of every region by scanning its pixels would be slow."
+    },
+    {
+     "start": 72.94,
+     "end": 78.71,
+     "text": "So we precompute a summed area table, where each cell stores the sum of all pixels above and to its left."
+    },
+    {
+     "start": 79.01,
+     "end": 85.05,
+     "text": "The sum of any rectangle then needs only four lookups: D, minus B, minus C, plus A."
+    },
+    {
+     "start": 85.35,
+     "end": 94.09,
+     "text": "A second table of squared pixels gives the variance too, so building the whole tree costs time proportional to the number of nodes, not the number of pixels."
+    }
+   ]
+  },
+  {
+   "tag": "04 \u00b7 Max-heap budget",
+   "title": "Spend a fixed budget where it matters",
+   "start": 95.08,
+   "end": 119.75,
+   "lines": [
+    "Sometimes we need a hard limit, for example, at most three hundred tokens.",
+    "For that, regions go into a max heap, keyed on their squared error: how much detail we would lose by keeping the region as one token.",
+    "We repeatedly pop the worst region, split it, and push its children back, until the budget is spent.",
+    "Watch the text sharpen first, while the empty background stays coarse."
+   ],
+   "cues": [
+    {
+     "start": 95.58,
+     "end": 100.17,
+     "text": "Sometimes we need a hard limit, for example, at most three hundred tokens."
+    },
+    {
+     "start": 100.47,
+     "end": 108.1,
+     "text": "For that, regions go into a max heap, keyed on their squared error: how much detail we would lose by keeping the region as one token."
+    },
+    {
+     "start": 108.4,
+     "end": 114.31,
+     "text": "We repeatedly pop the worst region, split it, and push its children back, until the budget is spent."
+    },
+    {
+     "start": 114.61,
+     "end": 118.74,
+     "text": "Watch the text sharpen first, while the empty background stays coarse."
+    }
+   ]
+  },
+  {
+   "tag": "05 \u00b7 Fidelity",
+   "title": "Better than shrinking the image",
+   "start": 119.75,
+   "end": 143.38,
+   "lines": [
+    "Is this actually better than just shrinking the image? We compare both at the same number of tokens.",
+    "Uniform downscaling blurs everything, including the text.",
+    "The adaptive version keeps the text sharp and only simplifies the empty areas: 43 decibels of fidelity, against 27.",
+    "Across the whole budget range, the adaptive curve stays above the uniform one."
+   ],
+   "cues": [
+    {
+     "start": 120.25,
+     "end": 125.55,
+     "text": "Is this actually better than just shrinking the image? We compare both at the same number of tokens."
+    },
+    {
+     "start": 125.85,
+     "end": 129.5,
+     "text": "Uniform downscaling blurs everything, including the text."
+    },
+    {
+     "start": 129.8,
+     "end": 137.65,
+     "text": "The adaptive version keeps the text sharp and only simplifies the empty areas: 43 decibels of fidelity, against 27."
+    },
+    {
+     "start": 137.95,
+     "end": 142.39,
+     "text": "Across the whole budget range, the adaptive curve stays above the uniform one."
+    }
+   ]
+  },
+  {
+   "tag": "06 \u00b7 Perceptual hash",
+   "title": "A 64-bit fingerprint per frame",
+   "start": 143.38,
+   "end": 169.04,
+   "lines": [
+    "Video adds a second kind of redundancy: time.",
+    "For every sampled frame, we compute a perceptual hash.",
+    "The frame is shrunk to thirty two by thirty two pixels, transformed with a discrete cosine transform, and its sixty four lowest frequencies are compared with their median, giving sixty four bits.",
+    "Frames that look alike differ in only a few bits, while a different scene differs in about half of them."
+   ],
+   "cues": [
+    {
+     "start": 143.88,
+     "end": 146.98,
+     "text": "Video adds a second kind of redundancy: time."
+    },
+    {
+     "start": 147.28,
+     "end": 150.61,
+     "text": "For every sampled frame, we compute a perceptual hash."
+    },
+    {
+     "start": 150.91,
+     "end": 162.36,
+     "text": "The frame is shrunk to thirty two by thirty two pixels, transformed with a discrete cosine transform, and its sixty four lowest frequencies are compared with their median, giving sixty four bits."
+    },
+    {
+     "start": 162.66,
+     "end": 168.05,
+     "text": "Frames that look alike differ in only a few bits, while a different scene differs in about half of them."
+    }
+   ]
+  },
+  {
+   "tag": "07 \u00b7 Multi-index hash table",
+   "title": "Find every near-duplicate, fast",
+   "start": 169.04,
+   "end": 199.33,
+   "lines": [
+    "To find near duplicates without comparing against every earlier frame, we cut each hash into five bands.",
+    "Each band is stored in its own hash table, with separate chaining for collisions.",
+    "Here is the pigeonhole trick: if two hashes differ in at most four bits, those bits can spoil at most four bands, so at least one band must match exactly.",
+    "So we only look inside a few buckets, and we are still guaranteed to find every near duplicate, even when a video cuts back to an earlier scene."
+   ],
+   "cues": [
+    {
+     "start": 169.54,
+     "end": 175.46,
+     "text": "To find near duplicates without comparing against every earlier frame, we cut each hash into five bands."
+    },
+    {
+     "start": 175.76,
+     "end": 179.97,
+     "text": "Each band is stored in its own hash table, with separate chaining for collisions."
+    },
+    {
+     "start": 180.27,
+     "end": 189.64,
+     "text": "Here is the pigeonhole trick: if two hashes differ in at most four bits, those bits can spoil at most four bands, so at least one band must match exactly."
+    },
+    {
+     "start": 189.94,
+     "end": 198.33,
+     "text": "So we only look inside a few buckets, and we are still guaranteed to find every near duplicate, even when a video cuts back to an earlier scene."
+    }
+   ]
+  },
+  {
+   "tag": "08 \u00b7 Union-find",
+   "title": "Group frames into scenes",
+   "start": 199.33,
+   "end": 223.37,
+   "lines": [
+    "Next, union find groups the frames into scenes.",
+    "Consecutive frames that look similar are merged into the same set, and so are duplicates.",
+    "Here we end up with 3 scenes: the code editor, the results slide, and the editor again.",
+    "Each scene's first frame is a key frame and is encoded fully. Later frames send only the regions that changed, and duplicates cost zero tokens."
+   ],
+   "cues": [
+    {
+     "start": 199.83,
+     "end": 202.94,
+     "text": "Next, union find groups the frames into scenes."
+    },
+    {
+     "start": 203.24,
+     "end": 208.36,
+     "text": "Consecutive frames that look similar are merged into the same set, and so are duplicates."
+    },
+    {
+     "start": 208.66,
+     "end": 213.81,
+     "text": "Here we end up with 3 scenes: the code editor, the results slide, and the editor again."
+    },
+    {
+     "start": 214.11,
+     "end": 222.37,
+     "text": "Each scene's first frame is a key frame and is encoded fully. Later frames send only the regions that changed, and duplicates cost zero tokens."
+    }
+   ]
+  },
+  {
+   "tag": "09 \u00b7 Overlay trie",
+   "title": "Send static overlays once",
+   "start": 223.37,
+   "end": 249.42,
+   "lines": [
+    "Some things never change, like a logo or a toolbar.",
+    "We cut each frame into blocks, and insert each block's position and hash into a binary trie that counts how often each key appears.",
+    "The logo block reaches the same leaf in almost every frame, while changing blocks scatter across different leaves.",
+    "Keys seen in at least half of the frames are static overlays. The model receives them once, and afterwards they are only referenced."
+   ],
+   "cues": [
+    {
+     "start": 223.87,
+     "end": 227.0,
+     "text": "Some things never change, like a logo or a toolbar."
+    },
+    {
+     "start": 227.3,
+     "end": 234.39,
+     "text": "We cut each frame into blocks, and insert each block's position and hash into a binary trie that counts how often each key appears."
+    },
+    {
+     "start": 234.69,
+     "end": 240.9,
+     "text": "The logo block reaches the same leaf in almost every frame, while changing blocks scatter across different leaves."
+    },
+    {
+     "start": 241.2,
+     "end": 248.42,
+     "text": "Keys seen in at least half of the frames are static overlays. The model receives them once, and afterwards they are only referenced."
+    }
+   ]
+  },
+  {
+   "tag": "10 \u00b7 Result",
+   "title": "From 54,720 to 1,107 tokens",
+   "start": 249.42,
+   "end": 270.62,
+   "lines": [
+    "Put together, on our twelve second screen recording, 24 sampled frames would normally cost 54,720 tokens.",
+    "The optimizer sends 1,107: a few key frames, small deltas, and free duplicates.",
+    "And every frame the model receives stays above 44 decibels of fidelity."
+   ],
+   "cues": [
+    {
+     "start": 249.92,
+     "end": 258.09,
+     "text": "Put together, on our twelve second screen recording, 24 sampled frames would normally cost 54,720 tokens."
+    },
+    {
+     "start": 258.39,
+     "end": 265.21,
+     "text": "The optimizer sends 1,107: a few key frames, small deltas, and free duplicates."
+    },
+    {
+     "start": 265.51,
+     "end": 269.64,
+     "text": "And every frame the model receives stays above 44 decibels of fidelity."
+    }
+   ]
+  },
+  {
+   "tag": "11 \u00b7 Manifest & adapter",
+   "title": "Model-agnostic output",
+   "start": 270.62,
+   "end": 300.33,
+   "lines": [
+    "The engine's output is an Optimized Token Manifest: a model agnostic list of regions, each worth one token.",
+    "A thin adapter converts the manifest for a specific model.",
+    "For Claude, which charges images by pixel area, we send one low resolution overview, plus full resolution crops of only the detailed regions.",
+    "For this document page, that is an estimated 19 percent fewer tokens, and the exact count can be confirmed with Claude's token counting endpoint."
+   ],
+   "cues": [
+    {
+     "start": 271.12,
+     "end": 277.75,
+     "text": "The engine's output is an Optimized Token Manifest: a model agnostic list of regions, each worth one token."
+    },
+    {
+     "start": 278.05,
+     "end": 281.35,
+     "text": "A thin adapter converts the manifest for a specific model."
+    },
+    {
+     "start": 281.65,
+     "end": 290.36,
+     "text": "For Claude, which charges images by pixel area, we send one low resolution overview, plus full resolution crops of only the detailed regions."
+    },
+    {
+     "start": 290.66,
+     "end": 299.32,
+     "text": "For this document page, that is an estimated 19 percent fewer tokens, and the exact count can be confirmed with Claude's token counting endpoint."
+    }
+   ]
+  },
+  {
+   "tag": "12 \u00b7 Limits & next steps",
+   "title": "What we have not proven yet",
+   "start": 300.33,
+   "end": 326.21,
+   "lines": [
+    "To be clear about the limits: dense textures gain nothing, because nothing in them is redundant.",
+    "Our fidelity numbers are pixel based so far, and our test inputs are synthetic.",
+    "Next, we will measure answer accuracy with a real vision model on real documents and screen recordings, and try a better split rule than plain variance.",
+    "That is the Adaptive Token Optimizer. You can try every step yourself in the live playground."
+   ],
+   "cues": [
+    {
+     "start": 300.83,
+     "end": 306.05,
+     "text": "To be clear about the limits: dense textures gain nothing, because nothing in them is redundant."
+    },
+    {
+     "start": 306.35,
+     "end": 310.84,
+     "text": "Our fidelity numbers are pixel based so far, and our test inputs are synthetic."
+    },
+    {
+     "start": 311.14,
+     "end": 319.68,
+     "text": "Next, we will measure answer accuracy with a real vision model on real documents and screen recordings, and try a better split rule than plain variance."
+    },
+    {
+     "start": 319.98,
+     "end": 325.22,
+     "text": "That is the Adaptive Token Optimizer. You can try every step yourself in the live playground."
+    }
+   ]
+  }
+ ]
+}
