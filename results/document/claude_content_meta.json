@@ -1,0 +1,26 @@
+{
+ "full_image_tokens_est": 1803,
+ "payload_tokens_est": 1467,
+ "used_fallback": false,
+ "crops": [
+  [
+   48,
+   64,
+   736,
+   848
+  ],
+  [
+   48,
+   1072,
+   928,
+   160
+  ],
+  [
+   48,
+   912,
+   768,
+   160
+  ]
+ ],
+ "note": "Image 1 is a 397x512 overview of a 1024x1320 original. The remaining images are full-resolution crops of its detailed regions, in original pixel coordinates: image 2 = crop x=48 y=64 w=736 h=848; image 3 = crop x=48 y=1072 w=928 h=160; image 4 = crop x=48 y=912 w=768 h=160."
+}

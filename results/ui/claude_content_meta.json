@@ -1,0 +1,7 @@
+{
+ "full_image_tokens_est": 1366,
+ "payload_tokens_est": 1366,
+ "used_fallback": true,
+ "crops": [],
+ "note": "(original image, unoptimized)"
+}
