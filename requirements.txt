@@ -1,0 +1,8 @@
+numpy
+opencv-python-headless
+pillow
+matplotlib
+pytest
+# optional, only for exact token counts via adapters/claude.count_tokens_with_claude
+# anthropic
+imageio-ffmpeg  # bundled ffmpeg, only for web/explainer/make_video.py

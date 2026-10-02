@@ -1,0 +1,15 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# IDE / OS
+.idea/
+.DS_Store
+
+# Regenerated on demand (python main.py demo / web/server.py)
+data/
+
+# Temporary render outputs
+web/media/_*
