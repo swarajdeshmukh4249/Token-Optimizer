@@ -52,7 +52,7 @@ function ExplainerPage() {
         <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">How TokenOpt works</h1>
         <p className="text-lg text-[var(--muted)] max-w-3xl">
           {data ? `${chapters.length} chapters, ${fmtTime(data.duration)}. ` : ""}
-          Every visual in the video is computed by the real engine. Jump with the chapters, or follow the live transcript.
+          Most scenes show real engine output; the summed-area table, hash-band and trie scenes are simplified illustrations. Jump with the chapters, or follow the live transcript.
         </p>
       </div>
 
