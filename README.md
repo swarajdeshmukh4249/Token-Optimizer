@@ -76,7 +76,7 @@ limitations.
 
 ## Toward the paper: open items
 
-1. **Answer-quality evaluation**: a fixed question set (OCR, counting, UI element lookup)
+1. **Answer-quali ty evaluation**: a fixed question set (OCR, counting, UI element lookup)
    answered by a real vision model on original vs optimized inputs, plus exact token
    counts via `count_tokens_with_claude()`.
 2. **A better split criterion**: variance treats smooth gradients and noise as "detail".

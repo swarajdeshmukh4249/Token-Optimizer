@@ -19,7 +19,7 @@
  "baseline_tokens": 54720,
  "optimized_tokens": 1107,
  "reduction_pct": 97.98,
- "timing_ms": 2751.12,
+ "timing_ms": 2490.14,
  "scenes": [
   [
    0,

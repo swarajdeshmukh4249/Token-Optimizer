@@ -6,10 +6,10 @@ Patch size **16px**, variance threshold **40.0**. Baseline = uniform patch grid 
 
 | input | size | baseline tok | optimized tok | reduction | PSNR | SSIM | uniform@same-budget PSNR / SSIM | time |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
-| document | 1024x1320 | 5312 | 2722 | **48.8%** | 70.6 | 1.000 | 23.0 / 0.946 | 232 ms |
-| ui | 1280x800 | 4000 | 905 | **77.4%** | 42.8 | 0.979 | 27.2 / 0.960 | 106 ms |
-| natural | 1024x768 | 3072 | 458 | **85.1%** | 42.3 | 0.977 | 34.6 / 0.984 | 121 ms |
-| dense | 768x768 | 2304 | 2304 | **0.0%** | lossless | 1.000 | lossless / 1.000 | 107 ms |
+| document | 1024x1320 | 5312 | 2722 | **48.8%** | 70.6 | 1.000 | 23.0 / 0.946 | 233 ms |
+| ui | 1280x800 | 4000 | 905 | **77.4%** | 42.8 | 0.979 | 27.2 / 0.960 | 124 ms |
+| natural | 1024x768 | 3072 | 458 | **85.1%** | 42.3 | 0.977 | 34.6 / 0.984 | 82 ms |
+| dense | 768x768 | 2304 | 2304 | **0.0%** | lossless | 1.000 | lossless / 1.000 | 80 ms |
 
 PSNR/SSIM compare the original with what the model would receive (each leaf squeezed into one patch). 'Uniform@same-budget' downsizes the whole image to the same token count - the fair baseline for the allocation decision.
 
@@ -21,7 +21,7 @@ PSNR/SSIM compare the original with what the model would receive (each leaf sque
 
 | input | size | baseline tok | optimized tok | reduction | mean / min PSNR | scenes | key / delta / dup | static overlay blocks | time |
 |---|---|---:|---:|---:|---:|---:|---|---:|---:|
-| screen_rec | 960x600 x 24 frames | 54720 | 1107 | **98.0%** | 48.1 / 44.8 | 3 | 3 / 16 / 5 | 130 | 2751 ms |
+| screen_rec | 960x600 x 24 frames | 54720 | 1107 | **98.0%** | 48.1 / 44.8 | 3 | 3 / 16 / 5 | 130 | 2490 ms |
 
 ![screen_rec timeline](screen_rec/timeline.png)
 

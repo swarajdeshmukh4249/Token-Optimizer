@@ -14,6 +14,7 @@ dependencies = ["numpy", "opencv-python-headless", "pillow", "matplotlib"]
 [project.optional-dependencies]
 test = ["pytest"]
 claude = ["anthropic"]
+tokens = ["tiktoken"]
 
 [project.scripts]
 tokenopt = "tokenopt.cli:main"

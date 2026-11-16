@@ -2,8 +2,9 @@
 
     .venv/bin/python web/server.py [port]   -> http://localhost:8420
 
-Static files come from web/, figures from results/, and a small JSON API runs
-the real optimizer on samples or uploaded files.
+The site at / is the built 3D site (web3d/dist, made by `npm run build` in web3d/);
+the older React UI stays at /classic. Figures come from results/, and a small JSON
+API runs the real optimizer on samples, uploaded files and extension pastes.
 """
 from __future__ import annotations
 
@@ -29,6 +30,7 @@ from tokenopt.adapters.claude import build_payload  # noqa: E402
 from tokenopt.image_opt import load_image, optimize_image, render_leaves, uniform_at_budget  # noqa: E402
 from tokenopt.metrics import psnr, ssim  # noqa: E402
 from tokenopt.synth import build_dataset  # noqa: E402
+from tokenopt.text_tokens import count_text_tokens  # noqa: E402
 from tokenopt.video_opt import optimize_video, read_video  # noqa: E402
 
 
@@ -41,6 +43,7 @@ def quadtree_overlay(img: np.ndarray, leaves, patch: int) -> np.ndarray:
     return out
 
 WEB = ROOT / "web"
+SITE = ROOT / "web3d" / "dist"
 RESULTS = ROOT / "results"
 SYNTH = ROOT / "data" / "synthetic"
 MAX_SIDE = 1568
@@ -186,9 +189,19 @@ def analyze_paste(body: dict) -> dict:
         "full_tokens": plan.full_tokens, "tokens": plan.tokens,
         "reduction": round(100 * plan.reduction, 1), "fallback": plan.fallback,
         "ms": round(plan.elapsed_ms, 1), "note": plan.note, "leaves": plan.leaves,
+        # The layout note is typed into the prompt, so it costs text tokens too.
+        "note_tokens": count_text_tokens(f"[{plan.note}] ", provider)[0] if plan.note else 0,
         "images": [{"name": n, "width": im.shape[1], "height": im.shape[0], "tokens": t,
                     "data": _png(im)} for (n, im), t in zip(plan.images, plan.image_tokens)],
     }
+
+
+def count_tokens(body: dict) -> dict:
+    """Browser extension side panel: token counts for prompt and reply text."""
+    provider = body.get("provider") if body.get("provider") in ("claude", "openai") else "openai"
+    texts = [str(t)[:200_000] for t in body.get("texts", [])][:16]
+    counts = [count_text_tokens(t, provider) for t in texts]
+    return {"tokens": [n for n, _ in counts], "method": counts[0][1] if counts else ""}
 
 
 def analyze_video(body: dict) -> dict:
@@ -340,7 +353,17 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(200, rows)
             if path.startswith("/results/"):
                 return self._static(RESULTS, path[len("/results/"):])
-            return self._static(WEB, "index.html" if path in ("/", "") else path.lstrip("/"))
+            # Old React UI: /classic (its asset paths are relative, so they land on / below).
+            if path in ("/classic", "/classic/"):
+                return self._static(WEB, "index.html")
+            if path.startswith("/classic/"):
+                return self._static(WEB, path[len("/classic/"):])
+            rel = "index.html" if path in ("/", "") else path.lstrip("/")
+            if (SITE / "index.html").is_file():
+                target = (SITE / rel).resolve()
+                if str(target).startswith(str(SITE.resolve())) and target.is_file():
+                    return self._static(SITE, rel)
+            return self._static(WEB, rel)
         except Exception as e:  # surface errors to the UI instead of dropping the connection
             return self._json(500, {"error": str(e)})
 
@@ -351,7 +374,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(413, {"error": "file too large (60 MB max)"})
             body = json.loads(self.rfile.read(length) or b"{}")
             routes = {"/api/upload": handle_upload, "/api/image": analyze_image, "/api/video": analyze_video,
-                      "/api/paste": analyze_paste}
+                      "/api/paste": analyze_paste, "/api/tokens": count_tokens}
             fn = routes.get(self.path)
             if fn is None:
                 return self._json(404, {"error": "not found"})

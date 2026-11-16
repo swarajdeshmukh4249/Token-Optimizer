@@ -16,7 +16,7 @@ function run(file) {
   $("result").innerHTML = `<div class="big">Optimizing…</div>`;
   const reader = new FileReader();
   reader.onload = () => chrome.runtime.sendMessage(
-    { type: "optimize", image: reader.result, provider: $("provider").value, session: "popup" },
+    { type: "optimize", image: reader.result, provider: $("provider").value, session: "popup", track: false },
     (res) => {
       if (!res || res.error) { $("result").innerHTML = `<p class="muted">${(res && res.error) || "No response"}</p>`; return; }
       const links = res.images.map((im) =>

@@ -14,7 +14,7 @@
  "baseline_tokens": 3072,
  "optimized_tokens": 458,
  "reduction_pct": 85.09,
- "timing_ms": 121.0,
+ "timing_ms": 82.48,
  "frames": [
   {
    "index": 0,
