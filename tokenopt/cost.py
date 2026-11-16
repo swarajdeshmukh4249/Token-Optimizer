@@ -26,3 +26,15 @@ def pixel_area_tokens(width: int, height: int, px_per_token: int = 750,
                       max_long_edge: int = 1568) -> int:
     w, h = fit_long_edge(width, height, max_long_edge)
     return math.ceil(w * h / px_per_token)
+
+
+def openai_image_tokens(width: int, height: int) -> int:
+    """OpenAI's published GPT-4o high-detail image cost (an estimate for other models).
+
+    Fit inside 2048x2048, then shrink so the short side is at most 768 px, then
+    charge 85 + 170 per 512x512 tile.
+    """
+    w, h = fit_long_edge(width, height, 2048)
+    s = min(1.0, 768 / min(w, h))
+    w, h = max(1, round(w * s)), max(1, round(h * s))
+    return 85 + 170 * math.ceil(w / 512) * math.ceil(h / 512)

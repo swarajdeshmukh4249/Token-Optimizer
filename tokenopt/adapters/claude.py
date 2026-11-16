@@ -45,9 +45,19 @@ class ClaudePayload:
 
 
 def detail_regions(result, max_crops: int = 6, pad_patches: int = 1) -> list[tuple[int, int, int, int]]:
-    p = result.patch
+    """Boxes around the quadtree leaves that stayed at single-patch size."""
     h, w = result.image.shape[:2]
     cells = [(l.gx, l.gy) for l in result.leaves if l.patches == 1]
+    return group_cells(cells, result.patch, w, h, max_crops, pad_patches)
+
+
+def group_cells(cells: list[tuple[int, int]], p: int, w: int, h: int, max_crops: int = 6,
+                pad_patches: int = 1) -> list[tuple[int, int, int, int]]:
+    """Merge grid cells into at most max_crops pixel boxes (x, y, w, h) with Union-Find.
+
+    Cells within `radius` grid steps are unioned; the radius doubles until the
+    number of connected components fits the crop budget.
+    """
     if not cells:
         return []
     pos = {c: i for i, c in enumerate(cells)}

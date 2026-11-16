@@ -1,0 +1,297 @@
+{
+  "radius": 4,
+  "queries": 300,
+  "scaling": [
+    {
+      "linear": {
+        "build_ms": 0.06,
+        "query_us": 56.16,
+        "comparisons": 1000.0,
+        "correct": true
+      },
+      "bktree": {
+        "build_ms": 0.52,
+        "query_us": 36.6,
+        "comparisons": 134.9,
+        "correct": true
+      },
+      "mih": {
+        "build_ms": 2.84,
+        "query_us": 3.82,
+        "comparisons": 9.9,
+        "correct": true
+      },
+      "avg_hits": 3.18,
+      "n": 1000
+    },
+    {
+      "linear": {
+        "build_ms": 0.07,
+        "query_us": 110.4,
+        "comparisons": 2000.0,
+        "correct": true
+      },
+      "bktree": {
+        "build_ms": 1.14,
+        "query_us": 64.49,
+        "comparisons": 239.6,
+        "correct": true
+      },
+      "mih": {
+        "build_ms": 5.46,
+        "query_us": 3.8,
+        "comparisons": 10.3,
+        "correct": true
+      },
+      "avg_hits": 2.84,
+      "n": 2000
+    },
+    {
+      "linear": {
+        "build_ms": 0.24,
+        "query_us": 384.64,
+        "comparisons": 5000.0,
+        "correct": true
+      },
+      "bktree": {
+        "build_ms": 3.55,
+        "query_us": 145.25,
+        "comparisons": 487.7,
+        "correct": true
+      },
+      "mih": {
+        "build_ms": 26.2,
+        "query_us": 5.15,
+        "comparisons": 12.6,
+        "correct": true
+      },
+      "avg_hits": 3.19,
+      "n": 5000
+    },
+    {
+      "linear": {
+        "build_ms": 0.62,
+        "query_us": 756.55,
+        "comparisons": 10000.0,
+        "correct": true
+      },
+      "bktree": {
+        "build_ms": 14.92,
+        "query_us": 302.21,
+        "comparisons": 825.5,
+        "correct": true
+      },
+      "mih": {
+        "build_ms": 32.44,
+        "query_us": 6.87,
+        "comparisons": 17.1,
+        "correct": true
+      },
+      "avg_hits": 2.62,
+      "n": 10000
+    },
+    {
+      "linear": {
+        "build_ms": 8.4,
+        "query_us": 1546.95,
+        "comparisons": 20000.0,
+        "correct": true
+      },
+      "bktree": {
+        "build_ms": 26.41,
+        "query_us": 455.4,
+        "comparisons": 1355.0,
+        "correct": true
+      },
+      "mih": {
+        "build_ms": 78.07,
+        "query_us": 7.95,
+        "comparisons": 23.2,
+        "correct": true
+      },
+      "avg_hits": 2.98,
+      "n": 20000
+    },
+    {
+      "linear": {
+        "build_ms": 3.07,
+        "query_us": 3922.25,
+        "comparisons": 50000.0,
+        "correct": true
+      },
+      "bktree": {
+        "build_ms": 73.89,
+        "query_us": 1153.3,
+        "comparisons": 2743.8,
+        "correct": true
+      },
+      "mih": {
+        "build_ms": 664.32,
+        "query_us": 17.53,
+        "comparisons": 45.2,
+        "correct": true
+      },
+      "avg_hits": 3.12,
+      "n": 50000
+    }
+  ],
+  "radius_sweep": {
+    "n": 20000,
+    "rows": [
+      {
+        "linear": {
+          "build_ms": 1.51,
+          "query_us": 1468.69,
+          "comparisons": 20000.0,
+          "correct": true
+        },
+        "bktree": {
+          "build_ms": 17.34,
+          "query_us": 1.57,
+          "comparisons": 5.0,
+          "correct": true
+        },
+        "mih": {
+          "build_ms": 41.14,
+          "query_us": 2.07,
+          "comparisons": 1.5,
+          "correct": true
+        },
+        "avg_hits": 0.26,
+        "radius": 0
+      },
+      {
+        "linear": {
+          "build_ms": 0.99,
+          "query_us": 1552.65,
+          "comparisons": 20000.0,
+          "correct": true
+        },
+        "bktree": {
+          "build_ms": 27.04,
+          "query_us": 12.87,
+          "comparisons": 37.0,
+          "correct": true
+        },
+        "mih": {
+          "build_ms": 48.1,
+          "query_us": 1.89,
+          "comparisons": 1.5,
+          "correct": true
+        },
+        "avg_hits": 0.57,
+        "radius": 1
+      },
+      {
+        "linear": {
+          "build_ms": 0.93,
+          "query_us": 1450.88,
+          "comparisons": 20000.0,
+          "correct": true
+        },
+        "bktree": {
+          "build_ms": 28.89,
+          "query_us": 57.4,
+          "comparisons": 174.0,
+          "correct": true
+        },
+        "mih": {
+          "build_ms": 42.84,
+          "query_us": 2.71,
+          "comparisons": 3.9,
+          "correct": true
+        },
+        "avg_hits": 1.17,
+        "radius": 2
+      },
+      {
+        "linear": {
+          "build_ms": 8.13,
+          "query_us": 1933.96,
+          "comparisons": 20000.0,
+          "correct": true
+        },
+        "bktree": {
+          "build_ms": 27.67,
+          "query_us": 196.9,
+          "comparisons": 557.6,
+          "correct": true
+        },
+        "mih": {
+          "build_ms": 68.42,
+          "query_us": 4.17,
+          "comparisons": 7.5,
+          "correct": true
+        },
+        "avg_hits": 2.15,
+        "radius": 3
+      },
+      {
+        "linear": {
+          "build_ms": 1.33,
+          "query_us": 1514.59,
+          "comparisons": 20000.0,
+          "correct": true
+        },
+        "bktree": {
+          "build_ms": 24.81,
+          "query_us": 433.31,
+          "comparisons": 1337.1,
+          "correct": true
+        },
+        "mih": {
+          "build_ms": 73.32,
+          "query_us": 8.21,
+          "comparisons": 24.3,
+          "correct": true
+        },
+        "avg_hits": 3.14,
+        "radius": 4
+      },
+      {
+        "linear": {
+          "build_ms": 1.14,
+          "query_us": 1469.99,
+          "comparisons": 20000.0,
+          "correct": true
+        },
+        "bktree": {
+          "build_ms": 23.9,
+          "query_us": 1581.18,
+          "comparisons": 4345.4,
+          "correct": true
+        },
+        "mih": {
+          "build_ms": 141.69,
+          "query_us": 64.53,
+          "comparisons": 261.8,
+          "correct": true
+        },
+        "avg_hits": 5.7,
+        "radius": 6
+      },
+      {
+        "linear": {
+          "build_ms": 1.05,
+          "query_us": 1470.56,
+          "comparisons": 20000.0,
+          "correct": true
+        },
+        "bktree": {
+          "build_ms": 14.63,
+          "query_us": 3383.38,
+          "comparisons": 8481.6,
+          "correct": true
+        },
+        "mih": {
+          "build_ms": 128.75,
+          "query_us": 268.67,
+          "comparisons": 1302.7,
+          "correct": true
+        },
+        "avg_hits": 8.76,
+        "radius": 8
+      }
+    ]
+  }
+}

@@ -1,0 +1,215 @@
+{
+  "patch": 16,
+  "samples": [
+    {
+      "name": "document",
+      "ref_words": 288,
+      "baseline_tokens": 5312,
+      "methods": [
+        {
+          "method": "adaptive",
+          "tokens": 2722,
+          "token_share": 0.512,
+          "word_recall": 0.997,
+          "char_similarity": 1.0
+        },
+        {
+          "method": "uniform @ same",
+          "tokens": 2714,
+          "token_share": 0.511,
+          "word_recall": 1.0,
+          "char_similarity": 1.0
+        },
+        {
+          "method": "adaptive @ 25%",
+          "tokens": 1328,
+          "token_share": 0.25,
+          "word_recall": 0.91,
+          "char_similarity": 0.127
+        },
+        {
+          "method": "uniform @ 25%",
+          "tokens": 1312,
+          "token_share": 0.247,
+          "word_recall": 0.938,
+          "char_similarity": 0.981
+        },
+        {
+          "method": "claude payload",
+          "tokens": 4322,
+          "token_share": 0.814,
+          "word_recall": 1.0,
+          "char_similarity": 1.0
+        }
+      ]
+    },
+    {
+      "name": "ui",
+      "ref_words": 51,
+      "baseline_tokens": 4000,
+      "methods": [
+        {
+          "method": "adaptive",
+          "tokens": 905,
+          "token_share": 0.226,
+          "word_recall": 1.0,
+          "char_similarity": 1.0
+        },
+        {
+          "method": "uniform @ same",
+          "tokens": 888,
+          "token_share": 0.222,
+          "word_recall": 0.176,
+          "char_similarity": 0.256
+        },
+        {
+          "method": "adaptive @ 25%",
+          "tokens": 905,
+          "token_share": 0.226,
+          "word_recall": 1.0,
+          "char_similarity": 1.0
+        },
+        {
+          "method": "uniform @ 25%",
+          "tokens": 888,
+          "token_share": 0.222,
+          "word_recall": 0.176,
+          "char_similarity": 0.256
+        },
+        {
+          "method": "claude payload",
+          "tokens": 4000,
+          "token_share": 1.0,
+          "word_recall": 1.0,
+          "char_similarity": 1.0
+        }
+      ]
+    },
+    {
+      "name": "agent dashboard",
+      "ref_words": 22,
+      "baseline_tokens": 4000,
+      "methods": [
+        {
+          "method": "adaptive",
+          "tokens": 1218,
+          "token_share": 0.304,
+          "word_recall": 1.0,
+          "char_similarity": 1.0
+        },
+        {
+          "method": "uniform @ same",
+          "tokens": 1188,
+          "token_share": 0.297,
+          "word_recall": 0.182,
+          "char_similarity": 0.262
+        },
+        {
+          "method": "adaptive @ 25%",
+          "tokens": 1000,
+          "token_share": 0.25,
+          "word_recall": 1.0,
+          "char_similarity": 1.0
+        },
+        {
+          "method": "uniform @ 25%",
+          "tokens": 1000,
+          "token_share": 0.25,
+          "word_recall": 0.273,
+          "char_similarity": 0.39
+        },
+        {
+          "method": "claude payload",
+          "tokens": 4000,
+          "token_share": 1.0,
+          "word_recall": 1.0,
+          "char_similarity": 1.0
+        }
+      ]
+    },
+    {
+      "name": "agent projects",
+      "ref_words": 44,
+      "baseline_tokens": 4000,
+      "methods": [
+        {
+          "method": "adaptive",
+          "tokens": 1306,
+          "token_share": 0.327,
+          "word_recall": 0.932,
+          "char_similarity": 0.227
+        },
+        {
+          "method": "uniform @ same",
+          "tokens": 1305,
+          "token_share": 0.326,
+          "word_recall": 0.614,
+          "char_similarity": 0.326
+        },
+        {
+          "method": "adaptive @ 25%",
+          "tokens": 1000,
+          "token_share": 0.25,
+          "word_recall": 0.977,
+          "char_similarity": 0.994
+        },
+        {
+          "method": "uniform @ 25%",
+          "tokens": 1000,
+          "token_share": 0.25,
+          "word_recall": 0.545,
+          "char_similarity": 0.639
+        },
+        {
+          "method": "claude payload",
+          "tokens": 4000,
+          "token_share": 1.0,
+          "word_recall": 1.0,
+          "char_similarity": 1.0
+        }
+      ]
+    },
+    {
+      "name": "agent modal",
+      "ref_words": 10,
+      "baseline_tokens": 4000,
+      "methods": [
+        {
+          "method": "adaptive",
+          "tokens": 1376,
+          "token_share": 0.344,
+          "word_recall": 1.0,
+          "char_similarity": 1.0
+        },
+        {
+          "method": "uniform @ same",
+          "tokens": 1363,
+          "token_share": 0.341,
+          "word_recall": 0.5,
+          "char_similarity": 0.769
+        },
+        {
+          "method": "adaptive @ 25%",
+          "tokens": 1000,
+          "token_share": 0.25,
+          "word_recall": 1.0,
+          "char_similarity": 1.0
+        },
+        {
+          "method": "uniform @ 25%",
+          "tokens": 1000,
+          "token_share": 0.25,
+          "word_recall": 0.8,
+          "char_similarity": 0.926
+        },
+        {
+          "method": "claude payload",
+          "tokens": 4000,
+          "token_share": 1.0,
+          "word_recall": 1.0,
+          "char_similarity": 1.0
+        }
+      ]
+    }
+  ]
+}

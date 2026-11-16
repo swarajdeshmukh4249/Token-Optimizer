@@ -2,8 +2,9 @@
 
     .venv/bin/python web/explainer/make_video.py
 
-Every visual is computed from the real engine (quadtree, heap, pHash, union-find,
-trie, adapter). Narration uses macOS `say`; captions are burned in so the video
+Most scenes are computed from the real engine (quadtree, heap, fidelity, pHash,
+union-find, results, adapter); the summed-area table, hash-band and trie scenes are
+simplified illustrations. Narration uses macOS `say`; captions are burned in so the video
 also works muted. Outputs go to web/media/:
     explainer.mp4   the video (H.264 + AAC)
     chapters.json   chapter titles, start/end times and transcript lines

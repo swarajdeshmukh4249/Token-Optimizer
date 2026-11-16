@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tokenopt"
+version = "0.1.0"
+description = "Adaptive multimodal token optimizer: decide how many tokens each region of an image or video deserves before a vision model sees it."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "DS-II CS2308 Group 6" }]
+dependencies = ["numpy", "opencv-python-headless", "pillow", "matplotlib"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+claude = ["anthropic"]
+tokens = ["tiktoken"]
+
+[project.scripts]
+tokenopt = "tokenopt.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["tokenopt", "tokenopt.ds", "tokenopt.adapters"]

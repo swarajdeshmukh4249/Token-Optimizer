@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "TokenOpt",
+  "version": "0.2.0",
+  "description": "Side panel that shows the tokens each ChatGPT or Claude.ai prompt uses and how many TokenOpt saved by optimizing pasted screenshots. Needs the local TokenOpt server.",
+  "permissions": ["storage", "sidePanel"],
+  "host_permissions": ["http://127.0.0.1:8420/*"],
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [
+    {
+      "matches": ["https://chatgpt.com/*", "https://chat.openai.com/*", "https://claude.ai/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "side_panel": { "default_path": "sidepanel.html" },
+  "action": { "default_title": "Open the TokenOpt side panel" },
+  "icons": { "16": "icons/16.png", "48": "icons/48.png", "128": "icons/128.png" }
+}

@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TokenOpt — Adaptive Multimodal Token Optimizer</title>
+  <meta name="description" content="A pre-tokenization layer that decides how many tokens each region of an image or video deserves, using a quadtree, a max-heap, perceptual hashing, union-find and a trie.">
+  <meta name="theme-color" content="#f0f1fa">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231a2ffb'/%3E%3Cpath d='M6 6h9v9H6zM17 6h4v4h-4zM22 6h4v4h-4zM17 11h4v4h-4zM22 11h4v4h-4zM6 17h20v9H6z' fill='%23fff'/%3E%3C/svg%3E">
+</head>
+<body class="is-loading">
+
+  <!-- Loader -->
+  <div id="loader" aria-hidden="true">
+    <div class="ld-bar"><i></i></div>
+    <div class="ld-count">
+      <div class="ld-label mono">tokens · ui screenshot</div>
+      <div class="ld-digits" id="ld-digits"></div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header id="hdr">
+    <a class="logo" href="#hero" data-scroll aria-label="TokenOpt, back to top">TOKENOPT</a>
+    <nav class="hdr-right">
+      <button class="pill pill-round" id="btn-motion" aria-pressed="false" aria-label="Pause 3D motion" title="Pause 3D motion"><span class="ico-dash"></span></button>
+      <a class="pill pill-dark" href="#playground" data-scroll><span class="roll" data-roll>Playground</span><span class="dot"></span></a>
+      <button class="pill pill-light" id="btn-menu" aria-expanded="false" aria-controls="menu"><span class="roll" data-roll>Menu</span><span class="dots"><i></i><i></i></span></button>
+    </nav>
+  </header>
+
+  <!-- Menu card -->
+  <div id="menu" hidden>
+    <div class="menu-card">
+      <nav class="menu-links">
+        <a href="#hero" data-scroll><span>Home</span><i></i></a>
+        <a href="#pipeline" data-scroll><span>Pipeline</span><i></i></a>
+        <a href="#structures" data-scroll><span>Structures</span><i></i></a>
+        <a href="#agent" data-scroll><span>Agent run</span><i></i></a>
+        <a href="#playground" data-scroll><span>Playground</span><i></i></a>
+      </nav>
+    </div>
+    <button class="menu-card menu-cta" id="menu-explainer">
+      <span>Watch the<br>explainer</span><span class="arrow">→</span>
+    </button>
+  </div>
+
+  <main id="main">
+
+    <!-- 01 Hero -->
+    <section id="hero">
+      <h1 class="hero-tag" data-lines>
+        <span class="line"><span>We decide how many tokens</span></span>
+        <span class="line"><span>each region of an image deserves</span></span>
+        <span class="line"><span>before the model ever sees it</span></span>
+      </h1>
+      <div class="hero-panel" id="hero-panel">
+        <canvas id="hero-canvas"></canvas>
+        <div class="hero-meter mono" id="hero-meter">
+          <span class="hm-k">ui screenshot</span>
+          <span class="hm-v"><b data-bind="ui.baseline">–</b> → <b data-bind="ui.optimized">–</b> tokens</span>
+        </div>
+      </div>
+      <div class="marks hero-marks"><span>+</span><span>+</span><span class="marks-label">Scroll to explore</span><span>+</span><span>+</span></div>
+    </section>
+
+    <!-- 02 Intro -->
+    <section id="intro">
+      <svg class="ribbon" id="ribbon" viewBox="0 0 1470 1500" fill="none" aria-hidden="true" preserveAspectRatio="xMidYMin meet">
+        <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1a2ffb"/><stop offset="1" stop-color="#5b86ff"/></linearGradient></defs>
+        <path id="ribbon-path" d="M-60 40 C 240 110, 430 330, 452 560 C 470 760, 330 640, 170 690 C -10 750, 10 1010, 220 1016 C 430 1022, 420 700, 640 660 C 860 620, 940 800, 1040 900 C 1150 1010, 1290 820, 1380 900 C 1470 980, 1420 1200, 1560 1320" stroke="url(#rg)" stroke-width="34" stroke-linecap="round"/>
+      </svg>
+      <h2 class="display intro-title" data-lines>
+        <span class="line indent"><span>Pay for Detail,</span></span>
+        <span class="line"><span>Not Blank Space</span></span>
+      </h2>
+      <div class="intro-row">
+        <div class="reel-ghost" id="reel-ghost"></div>
+        <div class="intro-copy">
+          <p class="lead" data-words>Vision models charge the same tokens for an empty wall as for a page of text. TokenOpt inspects an image or video first and spends the budget where the detail is, using a quadtree, a max-heap, perceptual hashing, union-find and a trie.</p>
+          <a class="pill pill-white" href="#pipeline" data-scroll data-fade><span class="dot"></span><span class="roll" data-roll>How it works</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 Reel -->
+    <section id="reel-sec">
+      <div class="marks marks-5 reel-marks-top"><span>+</span><span>+</span><span>+</span><span>+</span><span>+</span></div>
+      <div class="reel-slot" id="reel-slot">
+        <button class="reel" id="reel" aria-label="Play the explainer video">
+          <canvas id="reel-canvas"></canvas>
+          <span class="reel-tint"></span>
+          <span class="reel-ui">
+            <span class="reel-word roll" data-roll>Play</span>
+            <span class="reel-play"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span>
+            <span class="reel-word roll" data-roll>Explainer</span>
+          </span>
+          <span class="reel-meta mono"><span>real quadtree · <b data-bind="ui.regions">–</b> regions</span><span><b data-bind="ui.baseline">–</b> → <b data-bind="ui.optimized">–</b> tokens</span></span>
+        </button>
+      </div>
+      <div class="marks marks-5"><span>+</span><span>+</span><span>+</span><span>+</span><span>+</span></div>
+    </section>
+
+    <!-- 04 Structures -->
+    <section id="structures">
+      <div class="sec-head">
+        <h2 class="display-2" data-lines><span class="line"><span>The Structures</span></span></h2>
+        <p class="sec-note" data-fade>Seven purpose-built data structures.<br>Every number below is measured<br>by the engine, not estimated.</p>
+      </div>
+      <div class="cards" id="cards"></div>
+      <div class="center"><a class="pill pill-white" href="#playground" data-scroll data-fade><span class="dot"></span><span class="roll" data-roll>Try them live</span></a></div>
+    </section>
+
+    <!-- 05 Pipeline (glass layers) -->
+    <section id="pipeline" class="dark">
+      <div class="pipe-sticky">
+        <canvas id="pipe-canvas"></canvas>
+        <div class="pipe-halo" aria-hidden="true"></div>
+        <h2 class="pipe-title" id="pipe-title">
+          <span>Step inside the pipeline</span>
+          <span>and watch <b data-bind="ui.baseline">–</b> tokens</span>
+          <span>become <b data-bind="ui.optimized">–</b></span>
+        </h2>
+        <div class="pipe-stage mono" id="pipe-stage"><span class="ps-n">01</span><span class="ps-t">Image</span><span class="ps-d"></span></div>
+        <div class="pipe-count" id="pipe-count"><span class="mono">tokens</span><b>–</b></div>
+        <div class="marks marks-5 pipe-marks"><span>+</span><span>+</span><span>+</span><span>+</span><span>+</span></div>
+      </div>
+    </section>
+
+    <!-- 06 Agent -->
+    <section id="agent" class="dark">
+      <div class="agent-head">
+        <h2 class="caps-xl" data-lines>
+          <span class="line"><span><b data-bind="agent.turns">–</b> turns.</span></span>
+          <span class="line"><span>One agent.</span></span>
+          <span class="line"><span><em><b data-bind="agent.shotRed">–</b> fewer</em></span></span>
+          <span class="line"><span><em>screenshot tokens</em></span></span>
+        </h2>
+        <p class="agent-side" data-words>A computer-use agent re-reads its screen every turn. Most turns barely change it, so TokenOpt sends a key frame once, then only what moved.</p>
+      </div>
+
+      <div class="film" id="film"><div class="film-track" id="film-track"></div></div>
+
+      <div class="agent-chart-wrap">
+        <div class="agent-chart-head">
+          <div><div class="mono dim">cumulative context tokens · 20 turns</div></div>
+          <div class="legend mono"><span><i class="lg-a"></i>resend every screenshot</span><span><i class="lg-b"></i>tokenopt</span></div>
+        </div>
+        <svg id="agent-chart" viewBox="0 0 1000 380" preserveAspectRatio="none" aria-label="Cumulative context tokens per turn"></svg>
+        <div class="agent-stats">
+          <div data-fade><div class="stat-v" data-bind="agent.ctxBase">–</div><div class="mono dim">context tokens, baseline</div></div>
+          <div data-fade><div class="stat-v blue" data-bind="agent.ctxOpt">–</div><div class="mono dim">context tokens, optimised</div></div>
+          <div data-fade><div class="stat-v" data-bind="agent.ctxRed">–</div><div class="mono dim">less context to pay for</div></div>
+          <div data-fade><div class="stat-v" data-bind="agent.minPsnr">–</div><div class="mono dim">worst-turn fidelity (PSNR)</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 Playground -->
+    <section id="playground">
+      <div class="sec-head">
+        <h2 class="display-2" data-lines><span class="line"><span>Playground</span></span></h2>
+        <p class="sec-note" data-fade>Runs the live engine.<br>Try an example or drop in your own<br>image or video.</p>
+      </div>
+      <div class="pg" id="pg"></div>
+    </section>
+
+    <!-- 08 CTA + footer -->
+    <section id="cta">
+      <div class="marks marks-5"><span>+</span><span>+</span><span>+</span><span>+</span><span>+</span></div>
+      <p class="cta-kicker" data-fade>Is your context window ready to breathe?</p>
+      <a class="cta-big roll" data-roll href="#playground" data-scroll>Let's shrink tokens!</a>
+    </section>
+
+    <footer id="foot">
+      <div class="foot-grid">
+        <div>
+          <div class="foot-h">Get started</div>
+          <p><a href="#playground" data-scroll>Open the playground</a><br><a href="#pipeline" data-scroll>See how it works</a></p>
+        </div>
+        <div>
+          <div class="foot-h">Explore</div>
+          <p><a href="#pipeline" data-scroll>Pipeline</a><br><a href="#structures" data-scroll>Structures</a><br><a href="#agent" data-scroll>Agent run</a><br><a href="#playground" data-scroll>Playground</a></p>
+        </div>
+        <div>
+          <div class="foot-h">About the numbers</div>
+          <p>Every figure on this page is measured by the engine. Claude token counts are estimates (w × h / 750).</p>
+        </div>
+        <div class="foot-big">Adaptive<br>Multimodal<br>Token Optimizer</div>
+      </div>
+      <div class="foot-base">
+        <span>©2026 TokenOpt</span>
+        <span>Benchmarks updated <span data-bind="generated">–</span></span>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Explainer modal -->
+  <div id="modal" hidden>
+    <button class="pill pill-light modal-close" id="modal-close">Close<span class="dots"><i></i><i></i></span></button>
+    <video id="modal-video" controls playsinline preload="none"></video>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
