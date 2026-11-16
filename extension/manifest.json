@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "TokenOpt",
+  "version": "0.1.0",
+  "description": "Optimizes screenshots you paste into ChatGPT or Claude.ai so they cost fewer image tokens. Needs the local TokenOpt server.",
+  "permissions": ["storage"],
+  "host_permissions": ["http://127.0.0.1:8420/*"],
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [
+    {
+      "matches": ["https://chatgpt.com/*", "https://chat.openai.com/*", "https://claude.ai/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": { "default_popup": "popup.html", "default_title": "TokenOpt" },
+  "icons": { "16": "icons/16.png", "48": "icons/48.png", "128": "icons/128.png" }
+}

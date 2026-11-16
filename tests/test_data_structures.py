@@ -126,3 +126,36 @@ def test_heap_builder_respects_budget_and_still_tiles(budget):
     leaves = AdaptiveQuadtree(img, 16).build_budgeted(budget)
     assert len(leaves) <= budget
     assert (_coverage(leaves, img.shape) == 1).all()
+
+
+def test_bk_tree_matches_linear_scan():
+    import random as _r
+
+    from tokenopt.ds.bk_tree import BKTree
+    from tokenopt.ds_race import LinearScan, make_signatures
+
+    rng = _r.Random(3)
+    data = make_signatures(2000, rng)
+    bk, lin, mih = BKTree(), LinearScan(), MultiIndexHashTable(max_distance=4)
+    for i, h in enumerate(data):
+        bk.add(h, i)
+        lin.add(h, i)
+        mih.add(h, i)
+    for _ in range(100):
+        q = rng.choice(data) ^ (1 << rng.randrange(64))
+        for r in (0, 2, 4):
+            truth = sorted(p for _, p in lin.query(q, r))
+            assert sorted(p for _, p in bk.query(q, r)) == truth
+            assert sorted(p for _, p in mih.query(q, r)) == truth
+    assert len(bk) == 2000
+    assert bk.comparisons < lin.comparisons  # the triangle inequality pruned something
+
+
+def test_bk_tree_keeps_identical_hashes():
+    from tokenopt.ds.bk_tree import BKTree
+
+    bk = BKTree()
+    for p in "abc":
+        bk.add(0xFF, p)
+    assert sorted(p for _, p in bk.query(0xFF, 0)) == ["a", "b", "c"]
+    assert bk.depth() == 1

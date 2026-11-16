@@ -83,6 +83,7 @@ class MultiIndexHashTable:
         self._bounds = [(i * bits // m, (i + 1) * bits // m) for i in range(m)]
         self._tables = [ChainedHashTable() for _ in range(m)]
         self._count = 0
+        self.comparisons = 0  # full-hash distance evaluations made by queries
 
     def _bands(self, h: int) -> list[int]:
         return [(h >> lo) & ((1 << (hi - lo)) - 1) for lo, hi in self._bounds]
@@ -106,6 +107,7 @@ class MultiIndexHashTable:
                     continue
                 seen.add(id(entry))
                 dist = hamming(h, entry[0])
+                self.comparisons += 1
                 if dist <= d:
                     hits.append((dist, entry[1]))
         hits.sort(key=lambda t: t[0])

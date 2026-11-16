@@ -1,0 +1,244 @@
+{
+  "summary": {
+    "turns": 20,
+    "resolution": [
+      1280,
+      800
+    ],
+    "patch": 16,
+    "screenshot_tokens_baseline": 80000,
+    "screenshot_tokens_optimized": 4960,
+    "screenshot_reduction": 0.938,
+    "context_tokens_baseline": 840000,
+    "context_tokens_optimized": 68178,
+    "context_reduction": 0.9188,
+    "roles": {
+      "key": 3,
+      "delta": 13,
+      "duplicate": 4
+    },
+    "min_psnr": 36.74
+  },
+  "turns": [
+    {
+      "turn": 1,
+      "action": "observe dashboard",
+      "role": "key",
+      "ref": null,
+      "baseline_tokens": 4000,
+      "tokens": 1218,
+      "psnr": 42.89,
+      "context_baseline": 4000,
+      "context_optimized": 1218
+    },
+    {
+      "turn": 2,
+      "action": "move to Projects",
+      "role": "delta",
+      "ref": 0,
+      "baseline_tokens": 4000,
+      "tokens": 36,
+      "psnr": 42.8,
+      "context_baseline": 12000,
+      "context_optimized": 2472
+    },
+    {
+      "turn": 3,
+      "action": "click Projects",
+      "role": "delta",
+      "ref": 1,
+      "baseline_tokens": 4000,
+      "tokens": 387,
+      "psnr": 36.85,
+      "context_baseline": 24000,
+      "context_optimized": 4113
+    },
+    {
+      "turn": 4,
+      "action": "wait for page",
+      "role": "duplicate",
+      "ref": 2,
+      "baseline_tokens": 4000,
+      "tokens": 0,
+      "psnr": 36.85,
+      "context_baseline": 40000,
+      "context_optimized": 5754
+    },
+    {
+      "turn": 5,
+      "action": "hover + New project",
+      "role": "delta",
+      "ref": 3,
+      "baseline_tokens": 4000,
+      "tokens": 33,
+      "psnr": 36.74,
+      "context_baseline": 60000,
+      "context_optimized": 7428
+    },
+    {
+      "turn": 6,
+      "action": "click + New project",
+      "role": "key",
+      "ref": null,
+      "baseline_tokens": 4000,
+      "tokens": 1355,
+      "psnr": 45.37,
+      "context_baseline": 84000,
+      "context_optimized": 10457
+    },
+    {
+      "turn": 7,
+      "action": "click name field",
+      "role": "delta",
+      "ref": 5,
+      "baseline_tokens": 4000,
+      "tokens": 68,
+      "psnr": 45.69,
+      "context_baseline": 112000,
+      "context_optimized": 13554
+    },
+    {
+      "turn": 8,
+      "action": "type 'Agent'",
+      "role": "delta",
+      "ref": 6,
+      "baseline_tokens": 4000,
+      "tokens": 8,
+      "psnr": 45.3,
+      "context_baseline": 144000,
+      "context_optimized": 16659
+    },
+    {
+      "turn": 9,
+      "action": "type ' demo'",
+      "role": "delta",
+      "ref": 7,
+      "baseline_tokens": 4000,
+      "tokens": 8,
+      "psnr": 42.19,
+      "context_baseline": 180000,
+      "context_optimized": 19772
+    },
+    {
+      "turn": 10,
+      "action": "open budget dropdown",
+      "role": "delta",
+      "ref": 8,
+      "baseline_tokens": 4000,
+      "tokens": 101,
+      "psnr": 41.14,
+      "context_baseline": 220000,
+      "context_optimized": 22986
+    },
+    {
+      "turn": 11,
+      "action": "pick 1M / week",
+      "role": "delta",
+      "ref": 9,
+      "baseline_tokens": 4000,
+      "tokens": 27,
+      "psnr": 44.43,
+      "context_baseline": 264000,
+      "context_optimized": 26227
+    },
+    {
+      "turn": 12,
+      "action": "click Create",
+      "role": "key",
+      "ref": null,
+      "baseline_tokens": 4000,
+      "tokens": 1046,
+      "psnr": 39.95,
+      "context_baseline": 312000,
+      "context_optimized": 30514
+    },
+    {
+      "turn": 13,
+      "action": "wait",
+      "role": "delta",
+      "ref": 11,
+      "baseline_tokens": 4000,
+      "tokens": 3,
+      "psnr": 39.53,
+      "context_baseline": 364000,
+      "context_optimized": 34804
+    },
+    {
+      "turn": 14,
+      "action": "check new row",
+      "role": "delta",
+      "ref": 12,
+      "baseline_tokens": 4000,
+      "tokens": 5,
+      "psnr": 39.48,
+      "context_baseline": 420000,
+      "context_optimized": 39099
+    },
+    {
+      "turn": 15,
+      "action": "back to Dashboard",
+      "role": "delta",
+      "ref": 13,
+      "baseline_tokens": 4000,
+      "tokens": 350,
+      "psnr": 38.45,
+      "context_baseline": 480000,
+      "context_optimized": 43744
+    },
+    {
+      "turn": 16,
+      "action": "confirm dashboard",
+      "role": "duplicate",
+      "ref": 14,
+      "baseline_tokens": 4000,
+      "tokens": 0,
+      "psnr": 38.45,
+      "context_baseline": 544000,
+      "context_optimized": 48389
+    },
+    {
+      "turn": 17,
+      "action": "open Projects again",
+      "role": "delta",
+      "ref": 15,
+      "baseline_tokens": 4000,
+      "tokens": 264,
+      "psnr": 37.7,
+      "context_baseline": 612000,
+      "context_optimized": 53298
+    },
+    {
+      "turn": 18,
+      "action": "hover new row",
+      "role": "delta",
+      "ref": 16,
+      "baseline_tokens": 4000,
+      "tokens": 51,
+      "psnr": 37.6,
+      "context_baseline": 684000,
+      "context_optimized": 58258
+    },
+    {
+      "turn": 19,
+      "action": "wait",
+      "role": "duplicate",
+      "ref": 17,
+      "baseline_tokens": 4000,
+      "tokens": 0,
+      "psnr": 37.6,
+      "context_baseline": 760000,
+      "context_optimized": 63218
+    },
+    {
+      "turn": 20,
+      "action": "report success",
+      "role": "duplicate",
+      "ref": 17,
+      "baseline_tokens": 4000,
+      "tokens": 0,
+      "psnr": 37.6,
+      "context_baseline": 840000,
+      "context_optimized": 68178
+    }
+  ]
+}
