@@ -11,6 +11,8 @@ const fmt = (n) => Math.round(n).toLocaleString("en-US");
 const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const time = (t) => new Date(t).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 const MODE = { new: "new screen", delta: "changes only", duplicate: "duplicate, not sent", off: "TokenOpt off" };
+const label = (im) => (MODE[im.mode] || im.mode)
+  + (im.fallback ? ", original kept" : im.resized && im.mode === "new" ? ", right-sized" : "");
 
 let tabId = null;
 
@@ -29,7 +31,7 @@ function renderTotals(entries) {
   const saved = sum.without - sum.used;
   const pct = sum.without ? (100 * saved) / sum.without : 0;
   $("totals").innerHTML = `
-    <div class="label">This conversation · ${entries.length} prompt${entries.length === 1 ? "" : "s"}</div>
+    <div class="label">This tab · ${entries.length} prompt${entries.length === 1 ? "" : "s"}</div>
     <div class="totals">
       <div><div class="num">${fmt(sum.used)}</div><div class="sub">tokens used</div></div>
       <div><div class="num green">${fmt(saved)}</div><div class="sub">tokens saved (${pct.toFixed(1)}%)</div></div>
@@ -50,7 +52,7 @@ function renderDraft(draft) {
 function renderEntry(e, n) {
   const c = cost(e);
   const shots = e.images.length
-    ? `<tr><td class="k">Screenshots (${e.images.length}) · ${[...new Set(e.images.map((im) => MODE[im.mode] || im.mode))].join(", ")}</td>
+    ? `<tr><td class="k">Screenshots (${e.images.length}) · ${[...new Set(e.images.map(label))].join("; ")}</td>
          <td>${c.imgFull === c.imgSent ? fmt(c.imgSent) : `<s>${fmt(c.imgFull)}</s> → ${fmt(c.imgSent)}`}</td></tr>`
     : "";
   const reply = e.reply == null ? `<span class="wait">waiting…</span>` : fmt(e.reply);
@@ -79,18 +81,38 @@ function render(ledger) {
   $("entries").innerHTML = tab.entries.length
     ? tab.entries.map((e, i) => renderEntry(e, i + 1)).reverse().join("")
     : `<div class="empty-state">No prompts recorded in this tab yet.
-        <ol><li>Open chatgpt.com or claude.ai in this tab</li><li>Paste a screenshot (⌘⇧⌃4, then ⌘V)</li>
+        <ol><li>Open chatgpt.com or claude.ai in this tab</li><li>Paste, drop or attach a screenshot</li>
         <li>Type a prompt and send it</li></ol></div>`;
   $("foot").textContent = provider === "claude"
     ? "Claude does not publish its tokenizer: text counts are estimates (o200k). Screenshot costs use Anthropic's published formula ceil(w·h/750)."
-    : "Text counts use OpenAI's o200k tokenizer (exact for GPT-4o-class models). Screenshot costs use OpenAI's published formula 85 + 170 per 512 px tile. Only screenshots pasted with ⌘V are tracked.";
+    : "Text counts use OpenAI's o200k tokenizer (exact for GPT-4o-class models). Screenshot costs use OpenAI's published formula 85 + 170 per 512 px tile. Screenshots are tracked whether pasted, dropped or attached with the + button.";
+  $("foot").textContent += ` TokenOpt v${VERSION}.`;
+}
+
+const VERSION = chrome.runtime.getManifest().version;
+const CHAT = /^https:\/\/(chatgpt\.com|chat\.openai\.com|claude\.ai)\//;
+
+// Is the content script alive in the active tab? If not, say exactly what to do.
+function checkTab(tab) {
+  const set = (cls, html) => { $("cdot").className = "dot " + cls; $("conn").innerHTML = html; };
+  if (!tab) return set("", "No active tab");
+  chrome.tabs.sendMessage(tab.id, { type: "tokenopt-status" }, (r) => {
+    void chrome.runtime.lastError;
+    if (tab.id !== tabId) return;
+    if (r && r.version === VERSION) {
+      return set("ok", `Connected to ${r.provider === "claude" ? "Claude.ai" : "ChatGPT"} in this tab`);
+    }
+    if (CHAT.test(tab.url || "")) return set("bad", "Not connected: <b>refresh this tab</b> (⌘R), then try again");
+    set("", "Open chatgpt.com or claude.ai in this tab");
+  });
 }
 
 async function refresh() {
-  const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   tabId = tab ? tab.id : null;
   const { ledger = {} } = await chrome.storage.local.get("ledger");
   render(ledger);
+  checkTab(tab);
 }
 
 chrome.storage.onChanged.addListener((c) => {
@@ -98,6 +120,7 @@ chrome.storage.onChanged.addListener((c) => {
   if (c.enabled) setToggle(c.enabled.newValue);
 });
 chrome.tabs.onActivated.addListener(refresh);
+chrome.tabs.onUpdated.addListener((id, info) => { if (id === tabId && info.status === "complete") refresh(); });
 chrome.windows.onFocusChanged.addListener(refresh);
 
 function setToggle(on) {
@@ -124,4 +147,5 @@ function ping() {
 }
 ping();
 setInterval(ping, 10000);
+setInterval(refresh, 5000);
 refresh();

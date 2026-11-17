@@ -24,3 +24,24 @@ def test_followups_send_only_changes_and_never_cost_more():
             p = plan_followup(prev, f, prov)
             assert p.tokens <= p.full_tokens
             prev = f
+
+
+def test_right_size_saves_on_retina_and_refuses_when_quality_would_drop():
+    import cv2
+    import numpy as np
+    from tokenopt.adapters.chat import PROVIDERS, right_size
+    ui = make_session()[0][1]
+    retina = cv2.resize(ui, (ui.shape[1] * 2, ui.shape[0] * 2), interpolation=cv2.INTER_CUBIC)
+    for prov in ("claude", "openai"):
+        cost = PROVIDERS[prov][1]
+        small, did = right_size(retina, prov, dpr=2.0)
+        if did:
+            assert cost(small.shape[1], small.shape[0]) <= 0.9 * cost(retina.shape[1], retina.shape[0])
+            assert max(small.shape[:2]) >= 0.66 * max(retina.shape[:2]) / 2
+    assert right_size(retina, "claude", dpr=2.0)[1]            # Claude bills by area: always a win
+    noise = np.random.default_rng(0).integers(0, 255, (1600, 1600, 3), dtype=np.uint8)
+    kept, did = right_size(noise, "claude", dpr=2.0)             # needs every pixel: untouched
+    assert not did and kept is noise
+    crop = ui[:600, :900]
+    same, did = right_size(crop, "claude", dpr=1.0)              # already small: untouched
+    assert not did and same is crop

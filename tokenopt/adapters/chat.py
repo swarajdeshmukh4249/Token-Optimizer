@@ -61,6 +61,48 @@ class ChatPlan:
         return 1 - self.tokens / self.full_tokens
 
 
+def right_size(img: np.ndarray, provider: str = "claude", dpr: float = 1.0,
+               orig_long_edge: int | None = None, min_ssim: float = 0.93,
+               long_edges: tuple[int, ...] = (1280, 1024)) -> tuple[np.ndarray, bool]:
+    """Pick the cheapest resolution that still looks like the original.
+
+    Chat providers bill by pixel size, and a Retina screenshot stores every
+    on-screen pixel as a dpr x dpr block. Candidates are the on-screen size and a
+    few standard long edges; a candidate is allowed only if
+      * it is not smaller than 66% of the on-screen size (text stays legible),
+      * it costs at most 90% of the original under the provider's formula, and
+      * scaling it back up gives SSIM >= min_ssim against the original.
+    The cheapest allowed candidate wins (ties: the larger one).
+    Returns (image, resized?).
+    """
+    from ..metrics import ssim  # local import keeps module import light
+
+    cost = PROVIDERS[provider][1]
+    h, w = img.shape[:2]
+    long_now = max(w, h)
+    orig_long = orig_long_edge or long_now
+    dpr = max(1.0, float(dpr or 1))
+    full = cost(w, h)
+    floor = 0.66 * orig_long / dpr
+    edges = set(long_edges)
+    if dpr >= 1.5:
+        edges.add(round(orig_long / dpr))
+    options = []
+    for edge in edges:
+        if edge >= long_now or edge < floor:
+            continue
+        tw, th = fit_long_edge(w, h, edge)
+        c = cost(tw, th)
+        if c <= 0.9 * full:
+            options.append((c, -edge, tw, th))
+    for _, _, tw, th in sorted(options):
+        small = cv2.resize(img, (tw, th), interpolation=cv2.INTER_AREA)
+        back = cv2.resize(small, (w, h), interpolation=cv2.INTER_CUBIC)
+        if ssim(img, back) >= min_ssim:
+            return small, True
+    return img, False
+
+
 def plan_for_chat(img: np.ndarray, provider: str = "claude", patch: int = 16,
                   var_threshold: float = 40.0, thumb_long_edge: int = 512,
                   fallback_ratio: float = 0.85) -> ChatPlan:

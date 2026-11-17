@@ -38,5 +38,14 @@ The top card sums the tab's conversation. Switch TokenOpt **off** in the panel t
 "before" prompts (full screenshots go through), then **on** for the "after" prompts.
 "Manual mode" opens the old popup as a page: paste an image, download the optimized files.
 
-Limits: only screenshots pasted with ⌘V are tracked (not drag-and-drop or the upload
-button); prompt/reply detection relies on the chat sites' current page structure.
+Screenshots are caught whether they are pasted (⌘V), dropped on the page or picked with
+the + button. A first screenshot is right-sized (a Retina capture stores each on-screen
+pixel 4 times; the smaller copy is used only if it passes an SSIM check); a follow-up
+of the same screen in the same chat sends only the changed area; an identical one sends
+nothing. Each chat has its own screenshot memory.
+
+After changing the code: press the reload arrow on the extension's card. Open chat tabs
+refresh themselves; the side panel's second status line says whether the tab is connected.
+
+Limits: prompt/reply detection relies on the chat sites' current page structure (checked
+against chatgpt.com on 2026-11-17; Claude.ai not re-checked that day).
