@@ -46,8 +46,6 @@ the original, the quadtree overlay, what the model sees, and uniform patches at 
 scenes, the key / delta / duplicate frame split, mean PSNR and the static overlays found.
 The server uses only the standard library, keeps uploads in memory, and listens on 127.0.0.1 only.
 
-The earlier React UI is still served at `/classic`.
-
 ## Where each data structure lives
 
 | Synopsis component | Implementation | Role |

@@ -3,7 +3,7 @@
     .venv/bin/python web/server.py [port]   -> http://localhost:8420
 
 The site at / is the built 3D site (web3d/dist, made by `npm run build` in web3d/);
-the older React UI stays at /classic. Figures come from results/, and a small JSON
+there is no other UI. Figures come from results/, and a small JSON
 API runs the real optimizer on samples, uploaded files and extension pastes.
 """
 from __future__ import annotations
@@ -25,7 +25,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from tokenopt.adapters.chat import plan_followup  # noqa: E402
+from tokenopt.adapters.chat import PROVIDERS, plan_followup, right_size  # noqa: E402
 from tokenopt.adapters.claude import build_payload  # noqa: E402
 from tokenopt.image_opt import load_image, optimize_image, render_leaves, uniform_at_budget  # noqa: E402
 from tokenopt.metrics import psnr, ssim  # noqa: E402
@@ -42,7 +42,6 @@ def quadtree_overlay(img: np.ndarray, leaves, patch: int) -> np.ndarray:
         cv2.rectangle(out, (leaf.x, leaf.y), (leaf.x + leaf.w - 1, leaf.y + leaf.h - 1), color, 1)
     return out
 
-WEB = ROOT / "web"
 SITE = ROOT / "web3d" / "dist"
 RESULTS = ROOT / "results"
 SYNTH = ROOT / "data" / "synthetic"
@@ -175,9 +174,20 @@ def analyze_paste(body: dict) -> dict:
         s = MAX_SIDE / max(h, w)
         img = cv2.resize(img, (round(w * s), round(h * s)), interpolation=cv2.INTER_AREA)
     provider = body.get("provider") if body.get("provider") in ("claude", "openai") else "claude"
+    # What the chat app would bill for the pasted image as-is.
+    full_tokens = PROVIDERS[provider][1](img.shape[1], img.shape[0])
+    try:
+        dpr = float(body.get("dpr") or 1)
+    except (TypeError, ValueError):
+        dpr = 1.0
+    # Retina / oversized screenshots: cheapest size that still passes the SSIM check.
+    img, resized = right_size(img, provider, dpr, orig_long_edge=max(w, h))
     session = str(body.get("session", ""))[:64]
     prev = None if body.get("reset") else _paste_prev.get(session)
     plan = plan_followup(prev, img, provider)
+    fallback = plan.fallback and not resized  # a right-sized image is still a saving
+    print(f"  paste: {w}x{h} dpr={body.get('dpr')} commit={body.get('commit', True)} mode={plan.mode} "
+          f"sent={img.shape[1]}x{img.shape[0]} {full_tokens}->{plan.tokens}", file=sys.stderr, flush=True)
     if session and body.get("commit", True):  # the chat now holds this screenshot
         _paste_prev[session] = img
         _paste_prev.move_to_end(session)
@@ -186,8 +196,10 @@ def analyze_paste(body: dict) -> dict:
     return {
         "provider": plan.provider, "formula": plan.formula, "mode": plan.mode,
         "width": plan.width, "height": plan.height, "original_size": [w, h],
-        "full_tokens": plan.full_tokens, "tokens": plan.tokens,
-        "reduction": round(100 * plan.reduction, 1), "fallback": plan.fallback,
+        "full_tokens": full_tokens, "tokens": plan.tokens,
+        "resized": [img.shape[1], img.shape[0]] if resized else None,
+        "reduction": round(100 * (1 - plan.tokens / full_tokens), 1) if full_tokens else 0.0,
+        "fallback": fallback,
         "ms": round(plan.elapsed_ms, 1), "note": plan.note, "leaves": plan.leaves,
         # The layout note is typed into the prompt, so it costs text tokens too.
         "note_tokens": count_text_tokens(f"[{plan.note}] ", provider)[0] if plan.note else 0,
@@ -353,17 +365,10 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(200, rows)
             if path.startswith("/results/"):
                 return self._static(RESULTS, path[len("/results/"):])
-            # Old React UI: /classic (its asset paths are relative, so they land on / below).
-            if path in ("/classic", "/classic/"):
-                return self._static(WEB, "index.html")
-            if path.startswith("/classic/"):
-                return self._static(WEB, path[len("/classic/"):])
             rel = "index.html" if path in ("/", "") else path.lstrip("/")
-            if (SITE / "index.html").is_file():
-                target = (SITE / rel).resolve()
-                if str(target).startswith(str(SITE.resolve())) and target.is_file():
-                    return self._static(SITE, rel)
-            return self._static(WEB, rel)
+            if not (SITE / "index.html").is_file():
+                return self._json(503, {"error": "site not built: run `npm install && npm run build` in web3d/"})
+            return self._static(SITE, rel)
         except Exception as e:  # surface errors to the UI instead of dropping the connection
             return self._json(500, {"error": str(e)})
 
