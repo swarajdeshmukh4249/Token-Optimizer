@@ -47,7 +47,7 @@ W, H, FPS = 1280, 720, 24
 VOICE, RATE, SR = "Samantha", 178, 22050
 LEAD, GAP, TAIL = 0.5, 0.3, 1.0
 
-# Palette shared with the website (web/index.html)
+# Palette shared with the website (web3d/)
 BG = (10, 11, 13)
 PANEL = (19, 21, 26)
 BORDER = (40, 44, 52)
